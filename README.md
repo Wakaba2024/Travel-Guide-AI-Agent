@@ -3,73 +3,168 @@
 ## Overview
 
 The **Kenya Tourism Intelligence Assistant** is an AI-powered travel
-recommendation platform designed to help users discover the best tourism
-experiences across Kenya.\
-The system combines **data engineering, web scraping, vector databases,
-and Retrieval-Augmented Generation (RAG)** to provide intelligent
-recommendations based on user preferences such as budget, travel style,
-duration, and destination.
+recommendation system that helps users discover tourism experiences
+across Kenya based on their preferences.
+The platform combines **data engineering, web scraping, vector
+databases, and Retrieval-Augmented Generation (RAG)** to deliver
+intelligent recommendations for travel packages and destinations.
 
-The application is deployed as an interactive **Streamlit web app** and
-integrates AI models to provide smart travel insights and itinerary
-suggestions.
+Users can search for travel options based on:
+
+-   Budget
+-   Travel duration
+-   Travel style (luxury, budget, family, adventure, relaxing)
+-   Preferred destination
+
+The system retrieves relevant travel packages from a database and
+enhances the results using AI-powered contextual reasoning.
+
+The application is delivered through a **Streamlit web interface** and
+is deployed on **Streamlit Cloud**, making it accessible from anywhere.
 
 ------------------------------------------------------------------------
 
 ## Problem Statement
 
-Tourists planning trips to Kenya often struggle to find: - Reliable
-travel packages - Personalized travel recommendations - Up‑to‑date
-tourism insights - Efficient tools to compare destinations and budgets
+Tourists planning trips to Kenya face several challenges:
 
-Most travel websites provide **static listings** instead of
-**personalized recommendations**.
+-   Information about travel packages is scattered across many websites
+-   Most travel platforms offer static listings instead of personalized
+    recommendations
+-   It is difficult to quickly compare destinations based on budget and
+    travel style
+-   Travelers often lack insight into the best destinations for their
+    preferences
 
-This project solves that problem by building an **AI-driven tourism
-assistant** that: - Understands traveler preferences - Retrieves
-relevant travel packages - Generates personalized travel
-recommendations - Provides intelligent destination insights
+This project addresses these problems by building an **AI-powered
+tourism assistant** that:
+
+-   Understands user travel preferences
+-   Retrieves relevant travel packages using intelligent search
+-   Generates personalized recommendations
+-   Provides contextual insights about destinations
 
 ------------------------------------------------------------------------
 
 ## Tools, Frameworks, and Technologies
 
-### Programming
+### Programming Language
 
--   Python
+Python
 
 ### Data Engineering
 
--   PostgreSQL
--   pgvector (vector database extension)
+PostgreSQL\
+pgvector (vector database extension)
 
-### AI / Machine Learning
+### Artificial Intelligence
 
--   Mistral AI (embeddings and language model)
--   Retrieval-Augmented Generation (RAG)
+Mistral AI (embeddings and language model)\
+Retrieval-Augmented Generation (RAG)
 
 ### Data Collection
 
--   Playwright (web scraping)
--   BeautifulSoup (HTML parsing)
+Playwright (web scraping)\
+BeautifulSoup
 
-### Backend
+### Backend Framework
 
--   SQLAlchemy
+SQLAlchemy
 
 ### Frontend
 
--   Streamlit
+Streamlit
 
 ### Deployment
 
--   Streamlit Cloud
--   Neon PostgreSQL (hosted database)
+Streamlit Cloud\
+Neon PostgreSQL
 
 ### Version Control
 
--   Git
--   GitHub
+Git\
+GitHub
+
+------------------------------------------------------------------------
+
+## Project Architecture
+
+The system architecture consists of five main layers:
+
+1.  Data Collection Layer
+2.  Data Storage Layer
+3.  Vector Embedding Layer
+4.  Retrieval and Recommendation Layer
+5.  User Interface Layer
+
+### Architecture Diagram
+
+                     +------------------------+
+                     |   Tourism Websites     |
+                     | (Travel Packages Data) |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |   Web Scraping Layer   |
+                     |  Playwright / BS4      |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |    PostgreSQL Database |
+                     |  Travel Packages Table |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |   Embedding Generator  |
+                     |     Mistral AI         |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |  Vector Database Layer |
+                     |       pgvector         |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |  Recommendation Engine |
+                     |  RAG + SQL Filtering   |
+                     +-----------+------------+
+                                 |
+                                 v
+                     +------------------------+
+                     |   Streamlit Web App    |
+                     |  User Travel Queries   |
+                     +------------------------+
+
+------------------------------------------------------------------------
+
+## RAG Pipeline Workflow
+
+The system uses **Retrieval-Augmented Generation (RAG)** to produce
+intelligent responses.
+
+### RAG Pipeline
+
+    User Query
+         |
+         v
+    Convert Query to Embedding
+         |
+         v
+    Vector Similarity Search (pgvector)
+         |
+         v
+    Retrieve Relevant Travel Packages
+         |
+         v
+    Provide Context to Language Model
+         |
+         v
+    Generate Personalized Recommendation
 
 ------------------------------------------------------------------------
 
@@ -77,114 +172,144 @@ recommendations - Provides intelligent destination insights
 
 ### 1. Data Collection
 
-Travel package data and destination information were collected from
-tourism websites using automated web scraping tools.
+Travel package information was collected from tourism websites using
+automated scraping tools.
 
-The collected data included: - Package names - Destinations - Duration -
-Prices - Tour operators
+Collected fields included:
+
+-   Package name
+-   Destination
+-   Duration
+-   Price
+-   Tour operator
 
 ### 2. Data Storage
 
-The scraped data was stored in a **PostgreSQL database**.\
-The schema included tables such as: - travel_packages - destinations
+The extracted data was stored in a **PostgreSQL database** with
+structured tables including:
+
+-   travel_packages
+-   destinations
 
 ### 3. Embedding Generation
 
-Text data was converted into vector embeddings using **Mistral AI
-embeddings**.\
-These embeddings were stored in PostgreSQL using the **pgvector
-extension** to enable similarity search.
+Each travel package description was converted into vector embeddings
+using **Mistral AI embeddings**.
 
-### 4. Retrieval-Augmented Generation (RAG)
+These embeddings allow the system to perform **semantic similarity
+searches**.
 
-The RAG pipeline works as follows:
+### 4. Vector Database Integration
 
-1.  User submits a travel query
-2.  Query is converted into an embedding
-3.  Similar travel packages and destinations are retrieved using vector
-    similarity search
-4.  Retrieved context is passed to the language model
-5.  The model generates a personalized travel recommendation
+Embeddings were stored using the **pgvector extension** within
+PostgreSQL.
 
-### 5. Recommendation Engine
+This enables fast similarity search between user queries and stored
+travel information.
 
-A recommendation engine was built to filter travel packages based on: -
-Budget - Destination - Travel style - Duration
+### 5. Retrieval-Augmented Generation
 
-Results are ranked to provide the most relevant travel options.
+When a user submits a query:
 
-### 6. Frontend Interface
+1.  The query is converted into an embedding
+2.  Similar travel packages are retrieved from the vector database
+3.  Relevant context is sent to the language model
+4.  The model generates a personalized travel recommendation
 
-A **Streamlit web application** was developed to allow users to: - Enter
-travel preferences - Search for packages - Receive AI-generated
-recommendations
+### 6. Recommendation Engine
 
-### 7. Deployment
+The system filters travel packages using structured queries based on:
 
-The application was deployed using: - **Streamlit Cloud** for hosting -
-**Neon PostgreSQL** for the database
+-   Budget
+-   Destination
+-   Travel style
+-   Duration
+
+Results are ranked to show the most relevant travel options.
+
+### 7. Frontend Application
+
+A **Streamlit web application** was developed to provide a simple
+interface where users can:
+
+-   Input travel preferences
+-   Explore recommended travel packages
+-   Receive AI-generated insights
+
+### 8. Deployment
+
+The application was deployed using:
+
+-   **Streamlit Cloud** for hosting
+-   **Neon PostgreSQL** for database infrastructure
 
 ------------------------------------------------------------------------
 
 ## Results and Key Insights
 
-The project successfully delivered:
+The project produced a fully functioning **AI-powered tourism
+assistant** capable of:
 
--   An **AI-powered tourism assistant**
--   A **vector search system for travel packages**
--   A **personalized recommendation engine**
--   A **fully deployed web application**
+-   Retrieving travel packages using semantic search
+-   Generating personalized travel recommendations
+-   Providing contextual destination insights
+-   Delivering a user-friendly web interface
 
-Key insights include:
+Key insights:
 
--   AI-powered retrieval significantly improves the relevance of travel
-    recommendations.
--   Vector databases allow efficient semantic search across travel data.
--   Combining structured SQL filtering with vector search produces
-    better results than either approach alone.
+-   Vector search significantly improves recommendation relevance.
+-   Combining SQL filtering with AI retrieval produces more accurate
+    results.
+-   Streamlit enables rapid development of AI-powered data applications.
 
 ------------------------------------------------------------------------
 
 ## Key Challenges Experienced
 
-During development several challenges were encountered:
+### 1. Web Scraping Limitations
 
-### 1. Web Scraping Complexity
+Some tourism websites load content dynamically, requiring advanced
+scraping tools such as Playwright.
 
-Many tourism websites use dynamic content loading, which required tools
-like **Playwright** to scrape data effectively.
+### 2. Data Inconsistencies
 
-### 2. Data Quality Issues
+Scraped data contained issues such as:
 
-Some scraped data contained: - Missing prices - Inconsistent destination
-names - Duplicate records
+-   Missing prices
+-   Duplicate packages
+-   Inconsistent destination naming
 
-These issues required data cleaning and validation.
+Data cleaning and validation processes were required.
 
-### 3. Vector Database Integration
+### 3. Embedding Rate Limits
 
-Integrating **pgvector with PostgreSQL** required careful handling of
-embeddings and similarity queries.
+AI embedding APIs occasionally triggered rate limits during bulk
+embedding generation.
 
-### 4. Rate Limits from AI APIs
+Retry logic and delays were implemented to handle this.
 
-Generating embeddings using external APIs occasionally triggered rate
-limits.
+### 4. Vector Database Integration
+
+Integrating **pgvector** with PostgreSQL required careful handling of
+vector formats and similarity queries.
 
 ### 5. Deployment Configuration
 
-Deploying the application required careful configuration of: -
-Environment variables - Database connection strings - Streamlit secrets
+Deploying the application required proper configuration of:
 
-Incorrect configuration initially caused connection errors.
+-   Environment variables
+-   Database connection strings
+-   Streamlit secrets
+
+Incorrect configurations initially caused connection errors.
 
 ------------------------------------------------------------------------
 
 ## Usage
 
-### Access the Live Application
+### Accessing the Application
 
-The application can be accessed via the deployed Streamlit link.
+Open the deployed Streamlit application link.
 
 ### How to Use
 
@@ -197,18 +322,14 @@ The application can be accessed via the deployed Streamlit link.
 
 2.  Click **Explore Packages**
 
-3.  The AI assistant will return recommended travel packages based on
-    your preferences.
+3.  The AI assistant returns personalized travel recommendations.
 
 ### Example Queries
 
 -   Budget safari in Maasai Mara
 -   Beach holiday in Diani under \$2000
 -   Luxury safari in Kenya
--   3-day Nakuru wildlife trip
+-   3-day wildlife trip to Nakuru
 
 ------------------------------------------------------------------------
-
-
-
 
