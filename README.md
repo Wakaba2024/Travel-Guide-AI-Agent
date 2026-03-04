@@ -309,7 +309,7 @@ Incorrect configurations initially caused connection errors.
 
 ### Accessing the Application
 
-Open the deployed Streamlit application link.
+Open the deployed Streamlit application link. https://master-8egi5pluohnqk46bkd4ary.streamlit.app/
 
 ### How to Use
 
@@ -332,4 +332,5 @@ Open the deployed Streamlit application link.
 -   3-day wildlife trip to Nakuru
 
 ------------------------------------------------------------------------
+
 
